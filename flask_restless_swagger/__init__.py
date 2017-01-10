@@ -45,7 +45,8 @@ class SwagAPIManager(object):
         'consumes': ['application/json'],
         'produces': ['application/json'],
         'paths': {},
-        'definitions': {}
+        'definitions': {},
+        'tags': []
     }
 
     def __init__(self, app=None, **kwargs):
@@ -100,10 +101,11 @@ class SwagAPIManager(object):
         path = kwargs.get('url_prefix', "") + '/' + name
         id_path = "{0}/{{{1}Id}}".format(path, schema.lower())
         self.swagger['paths'][path] = {}
-
+        self.swagger['tags'].append({'name': schema})
         for method in [m.lower() for m in kwargs.get('methods', ['GET'])]:
             if method == 'get':
                 self.swagger['paths'][path][method] = {
+                    'tags': [schema],
                     'parameters': [{
                         'name': 'q',
                         'in': 'query',
@@ -128,6 +130,7 @@ class SwagAPIManager(object):
                 if id_path not in self.swagger['paths']:
                     self.swagger['paths'][id_path] = {}
                 self.swagger['paths'][id_path][method] = {
+                    'tags': [schema],
                     'parameters': [{
                         'name': schema.lower() + 'Id',
                         'in': 'path',
@@ -152,6 +155,7 @@ class SwagAPIManager(object):
                 if id_path not in self.swagger['paths']:
                     self.swagger['paths'][id_path] = {}
                 self.swagger['paths']["{0}/{{{1}Id}}".format(path, schema.lower())][method] = {
+                    'tags': [schema],
                     'parameters': [{
                         'name': schema.lower() + 'Id',
                         'in': 'path',
@@ -170,6 +174,7 @@ class SwagAPIManager(object):
                     self.swagger['paths'][id_path]['description'] = model.__doc__
             else:
                 self.swagger['paths'][path][method] = {
+                    'tags': [schema],
                     'parameters': [{
                         'name': name,
                         'in': 'body',
