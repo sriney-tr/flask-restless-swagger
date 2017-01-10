@@ -3,35 +3,36 @@ __email__ = 'mike@messmore.org'
 __version__ = '0.2.0'
 
 try:
-	import urlparse
+    import urlparse
 except:
-	from urllib import parse as urlparse
+    from urllib import parse as urlparse
 
 import json
+
 import yaml
 from flask import jsonify, request, Blueprint, redirect
 from flask_restless import APIManager
 from flask_restless.helpers import *
 
-sqlalchemy_swagger_type = {
-    'INTEGER': 'integer',
-    'SMALLINT': 'int32',
-    'NUMERIC': 'number',
-    'DECIMAL': 'number',
-    'VARCHAR': 'string',
-    'TEXT': 'string',
-    'DATE': 'date',
-    'BOOLEAN': 'bool',
-    'BLOB': 'binary',
-    'BYTEA': 'binary',
-    'BINARY': 'binary',
-    'VARBINARY': 'binary',
-    'FLOAT': 'float',
-    'REAL': 'float',
-    'DATETIME': 'date-time',
-    'BIGINT': 'int64',
-    'ENUM': 'string',
-    'INTERVAL': 'date-time',
+sqlalchemy_swagger_mapping = {
+    'INTEGER': {'format': 'int32', 'type': 'integer'},
+    'SMALLINT': {'format': 'int32', 'type': 'integer'},
+    'NUMERIC': {'format': 'float', 'type': 'number'},
+    'DECIMAL': {'format': 'float', 'type': 'number'},
+    'VARCHAR': {'format': 'string', 'type': 'string'},
+    'TEXT': {'format': 'string', 'type': 'string'},
+    'DATE': {'format': 'date', 'type': 'string'},
+    'BOOLEAN': {'format': 'bool', 'type': 'boolean'},
+    'BLOB': {'format': 'binary', 'type': 'string'},
+    'BYTEA': {'format': 'binary', 'type': 'string'},
+    'BINARY': {'format': 'binary', 'type': 'string'},
+    'VARBINARY': {'format': 'binary', 'type': 'string'},
+    'FLOAT': {'format': 'float', 'type': 'number'},
+    'REAL': {'format': 'double', 'type': 'number'},
+    'DATETIME': {'format': 'date-time', 'type': 'string'},
+    'BIGINT': {'format': 'int64', 'type': 'integer'},
+    'ENUM': {'format': 'string', 'type': 'string'},
+    'INTERVAL': {'format': 'date-time', 'type': 'string'},
 }
 
 
@@ -40,7 +41,7 @@ class SwagAPIManager(object):
         'swagger': '2.0',
         'info': {},
         'schemes': ['http', 'https'],
-        'basePath': '/',
+        'basePath': '/api',
         'consumes': ['application/json'],
         'produces': ['application/json'],
         'paths': {},
@@ -115,7 +116,7 @@ class SwagAPIManager(object):
                             'schema': {
                                 'title': name,
                                 'type': 'array',
-                                'items': {'$ref': '#/definitions/' + name}
+                                'items': {'$ref': '#/definitions/' + schema}
                             }
                         }
 
@@ -139,7 +140,7 @@ class SwagAPIManager(object):
                             'description': 'Success ' + name,
                             'schema': {
                                 'title': name,
-                                '$ref': '#/definitions/' + name
+                                '$ref': '#/definitions/' + schema
                             }
                         }
 
@@ -173,7 +174,8 @@ class SwagAPIManager(object):
                         'name': name,
                         'in': 'body',
                         'description': schema,
-                        'type': "#/definitions/" + schema
+                        'required': True,
+                        'schema': {"$ref": "#/definitions/" + schema}
                     }],
                     'responses': {
                         200: {
@@ -199,7 +201,7 @@ class SwagAPIManager(object):
                 column_type = str(column.type)
                 if '(' in column_type:
                     column_type = column_type.split('(')[0]
-                column_defn = sqlalchemy_swagger_type[column_type]
+                column_defn = sqlalchemy_swagger_mapping[column_type]
             except AttributeError:
                 schema = get_related_model(model, column_name)
                 if column_name + '_id' in columns:
