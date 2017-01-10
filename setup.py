@@ -22,13 +22,13 @@ The full documentation is at http://flask-restless-swagger.rtfd.org."""
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
-    name='flask-restless-swagger',
-    version='0.2.1',
+    name='flask-restless-swagger-2',
+    version='0.0.1',
     description='Magically create swagger documentation as you magically create your RESTful API',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
-    author='Michael Messmore',
-    author_email='mike@messmore.org',
-    url='https://github.com/mmessmore/flask-restless-swagger',
+    author='Lucas Simonelli',
+    author_email='lucasp.simonelli@gmail.com',
+    url='https://github.com/lucasSimonelli/flask-restless-swagger',
     packages=[
         'flask_restless_swagger',
     ],
@@ -36,7 +36,9 @@ setup(
     include_package_data=True,
     install_requires=[
         'Flask>=0.10.0',
-        'Flask-Restless>=0.17.0'
+        'Flask-Restless>=0.17.0',
+        'pyyaml>=3.11',
+        'wheel>=0.22'
     ],
     license='BSD',
     zip_safe=False,
