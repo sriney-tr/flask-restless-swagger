@@ -23,6 +23,7 @@ sqlalchemy_swagger_mapping = {
     'TEXT': {'format': 'string', 'type': 'string'},
     'DATE': {'format': 'date', 'type': 'string'},
     'BOOLEAN': {'format': 'bool', 'type': 'boolean'},
+    'TINYINT': {'format': 'bool', 'type': 'boolean'},
     'BLOB': {'format': 'binary', 'type': 'string'},
     'BYTEA': {'format': 'binary', 'type': 'string'},
     'BINARY': {'format': 'binary', 'type': 'string'},
